@@ -13,7 +13,8 @@ const transporter = nodemailer.createTransport({
     secure: true, // SSL ব্যবহারের জন্য true
     auth: {
         user: 'shaonparvej99@gmail.com',
-        pass: 'wmnecioqbenthppc' // এখানে ১৬ অক্ষরের কোডটি হুবহু বসান
+        pass: 'wmnecioqbenthppc' 
+        // এখানে ১৬ অক্ষরের কোডটি হুবহু বসান
     }
 });
 
