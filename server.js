@@ -10,11 +10,10 @@ app.use(bodyParser.json());
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // SSL ব্যবহারের জন্য true
+    secure: true, 
     auth: {
         user: 'shaonparvej99@gmail.com',
-        pass: 'wmnecioqbenthppc' 
-        // এখানে ১৬ অক্ষরের কোডটি হুবহু বসান
+        pass: 'wmnecioqbenthppc'
     }
 });
 
