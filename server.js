@@ -8,12 +8,15 @@ app.use(bodyParser.json());
 
 // --- EMAIL CONFIGURATION ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // SSL ব্যবহারের জন্য true
     auth: {
         user: 'shaonparvej99@gmail.com',
-        pass: 'wmnecioqbenthppc' 
+        pass: 'wmnecioqbenthppc' // এখানে ১৬ অক্ষরের কোডটি হুবহু বসান
     }
 });
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
