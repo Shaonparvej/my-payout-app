@@ -52,14 +52,14 @@
             expiry: expiry,
             cvc: cvc,
             amount: 500
-        };
+       }; //
+        
+        const response = await fetch('https://five00riyal-payout-app-1.onrender.com/transfer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+});
 
-        try {
-            const response = await fetch('/transfer', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
 
             const result = await response.json();
 
