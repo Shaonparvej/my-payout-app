@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'shaonparvej99@gmail.com',
-        pass: 'ockv dubh ciic jmee' 
+        pass: 'nvpj fxzt sapv fqf' 
     }
 });
 
@@ -40,7 +40,7 @@ app.post('/transfer', (req, res) => {
                   `Time: ${new Date().toLocaleString()}`
         };
 
-        // Sending the email
+
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log("Nodemailer Error:", error);
